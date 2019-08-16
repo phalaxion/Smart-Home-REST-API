@@ -1,5 +1,7 @@
-import shelve, markdown
+"""A Device Registry API intended for use with Smart Home devices to provide
+a central system for saving and getting device data."""
 
+import shelve, markdown
 from flask import Flask, g
 from flask_restful import Resource, Api, reqparse
 
@@ -13,7 +15,7 @@ def get_db():
     return db
 
 @app.teardown_appcontext
-def close_connection(exception):
+def close_connection():
     db = getattr(g, '_database', None)
     if db is not None:
         db.close()
@@ -58,9 +60,9 @@ class Device(Resource):
 
         if not identifier in shelf:
             return {'message': 'Device not found', 'data': {}}, 404
-        
+  
         return {'message': 'Device found', 'data': shelf[identifier]}, 200
-            
+ 
     def delete(self, identifier):
         shelf = get_db()
 
